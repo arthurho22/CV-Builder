@@ -1,27 +1,28 @@
 import { useState } from 'react';
-import CVForm from '../components/CVForm';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import CVForm from '../components/form/CVForm';
 
 export default function Home() {
+  const [curriculos, setCurriculos] = useLocalStorage('curriculos', []);
   const [cv, setCv] = useState(null);
+
+  const handleSubmit = (formData) => {
+    const novoCurriculo = { ...formData, id: Date.now() };
+    setCurriculos([...curriculos, novoCurriculo]);
+    setCv(novoCurriculo);
+  };
 
   return (
     <div>
       <h1>CV Builder</h1>
       {!cv ? (
-        <CVForm onSubmit={setCv} />
+        <CVForm onSubmit={handleSubmit} />
       ) : (
         <div>
-          <h2>Seu CV:</h2>
-          <p>Nome: {cv.nome}</p>
-          <p>Email: {cv.email}</p>
-          <p>Telefone: {cv.telefone}</p>
-          <p>Endereço: {cv.endereco}</p>
-          <p>Experiência Profissional: {cv.experienciaProfissional}</p>
-          <p>Educação: {cv.educacao}</p>
-          <p>Habilidades: {cv.habilidades}</p>
-          <p>Objetivo Profissional: {cv.objetivosProfissional}</p>
-          <button onClick={() => setCv(null)}>Editar</button>
+          <h2>Currículo Criado com Sucesso!</h2>
+          <h3>{cv.nome}</h3>
         </div>
+
       )}
     </div>
   );
