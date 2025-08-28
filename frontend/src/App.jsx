@@ -6,7 +6,6 @@ import VerCurriculo from './pages/VerCurriculo';
 
 function App() {
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/criar-curriculo" element={<CriarCurriculo />} />
@@ -14,6 +13,7 @@ function App() {
         <Route path="/visualizar-curriculos" element={<VisualizarCurriculos />} />
         <Route path="/curriculo/:id" element={<VerCurriculo />} />
       </Routes>
-    </BrowserRouter>
   );
 }
+
+export default App 

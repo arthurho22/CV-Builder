@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import CVForm from '../components/form/CVForm';
+import CVForm from '../components/CVForm';
 
 export default function CriarCurriculo() {
     const { id } = useParams();
@@ -14,20 +14,22 @@ export default function CriarCurriculo() {
         ? curriculos.find(c => c.id === parseInt(id)) 
         : null;
 
-    const handleSubmit = (formData) => {
-        if (isEditMode) {
-            const updated = curriculos.map(c => 
-                c.id === parseInt(id) ? { ...formData, id: parseInt(id) } : c
-            );
-            setCurriculos(updated);
-        } else {
-            const novoCurriculo = { ...formData, id: Date.now() };
-            setCurriculos([...curriculos, novoCurriculo]);
-        }
-        
-        navigate('/visualizar-curriculos');
-    };
 
+const handleSubmit = async (formData) => {
+  try {
+    if (isEditMode) {
+      await updateCurriculo(id, formData);
+      Swal.fire('Sucesso!', 'Currículo atualizado com sucesso!', 'success');
+    } else {
+      await createCurriculo(formData);
+      Swal.fire('Sucesso!', 'Currículo criado com sucesso!', 'success');
+    }
+    navigate('/visualizar-curriculos');
+  } catch (error) {
+    console.error('Erro ao salvar:', error);
+    Swal.fire('Erro', 'Não foi possível salvar o currículo', 'error');
+  }
+};
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="container mx-auto px-4">
