@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+<<<<<<< HEAD
 import Swal from 'sweetalert2';
 import { 
   FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, 
@@ -8,6 +9,9 @@ import {
   FaPlus, FaTrash, FaArrowLeft, FaSave,
   FaLinkedin, FaGithub, FaGlobe
 } from 'react-icons/fa';
+=======
+import CVForm from '../components/CVForm';
+>>>>>>> 8d645a8b6c3c88bef368e672f79b1a12ffdd16fd
 
 export default function CriarCurriculo() {
   const { id } = useParams();
@@ -52,6 +56,7 @@ export default function CriarCurriculo() {
     habilidades: ''
   });
 
+<<<<<<< HEAD
   useEffect(() => {
     if (curriculoParaEditar) {
       setFormData(curriculoParaEditar);
@@ -64,6 +69,33 @@ export default function CriarCurriculo() {
       [field]: value
     }));
   };
+=======
+
+const handleSubmit = async (formData) => {
+  try {
+    if (isEditMode) {
+      await updateCurriculo(id, formData);
+      Swal.fire('Sucesso!', 'Currículo atualizado com sucesso!', 'success');
+    } else {
+      await createCurriculo(formData);
+      Swal.fire('Sucesso!', 'Currículo criado com sucesso!', 'success');
+    }
+    navigate('/visualizar-curriculos');
+  } catch (error) {
+    console.error('Erro ao salvar:', error);
+    Swal.fire('Erro', 'Não foi possível salvar o currículo', 'error');
+  }
+};
+    return (
+        <div className="min-h-screen bg-gray-50 py-8">
+            <div className="container mx-auto px-4">
+                <div className="max-w-4xl mx-auto">
+                    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                            {isEditMode ? 'Editar Currículo' : 'Criar Currículo'}
+                        </h1>
+                    </div>
+>>>>>>> 8d645a8b6c3c88bef368e672f79b1a12ffdd16fd
 
   const handleArrayChange = (arrayName, index, field, value) => {
     setFormData(prev => ({
