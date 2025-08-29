@@ -1,13 +1,65 @@
 ﻿import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-export const api = axios.create({
-  baseURL: API_BASE_URL,
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-export const getCurriculos = () => api.get('/curriculos');
-export const getCurriculoById = (id) => api.get(`/curriculos/${id}`);
-export const createCurriculo = (curriculo) => api.post('/curriculos', curriculo);
-export const updateCurriculo = (id, curriculo) => api.put(`/curriculos/${id}`, curriculo);
-export const deleteCurriculo = (id) => api.delete(`/curriculos/${id}`);
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('Erro na API:', error.response?.data || error.message);
+    throw error;
+  }
+);
+
+export const criarCurriculoAPI = async (curriculoData) => {
+  try {
+    const response = await api.post('/curriculos', curriculoData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Erro ao criar currículo');
+  }
+};
+
+export const atualizarCurriculoAPI = async (id, curriculoData) => {
+  try {
+    const response = await api.put(`/curriculos/${id}`, curriculoData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Erro ao atualizar currículo');
+  }
+};
+
+export const listarCurriculosAPI = async () => {
+  try {
+    const response = await api.get('/curriculos');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Erro ao listar currículos');
+  }
+};
+
+export const buscarCurriculoAPI = async (id) => {
+  try {
+    const response = await api.get(`/curriculos/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Erro ao buscar currículo');
+  }
+};
+
+export const excluirCurriculoAPI = async (id) => {
+  try {
+    const response = await api.delete(`/curriculos/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Erro ao excluir currículo');
+  }
+};
+
+export default api;
