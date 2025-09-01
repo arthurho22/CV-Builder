@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
-<<<<<<< HEAD
-import { Link } from 'react-router-dom';
-import { api } from '../services/api';
-
-export default function VisualizarCurriculos() {
-  const [curriculos, setCurriculos] = useState([]);
-=======
 import { useNavigate } from 'react-router-dom';
-import { getCurriculos, deleteCurriculo } from '../utils/api';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import Swal from 'sweetalert2';
 import { FaEye, FaEdit, FaTrash, FaPlus, FaUser, FaEnvelope, FaBriefcase } from 'react-icons/fa';
 
@@ -15,65 +8,15 @@ export default function VisualizarCurriculos() {
   const [curriculos, setCurriculos] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
->>>>>>> 8d645a8b6c3c88bef368e672f79b1a12ffdd16fd
+  const [curriculosStorage, setCurriculosStorage] = useLocalStorage('curriculos', []);
 
   useEffect(() => {
     loadCurriculos();
   }, []);
 
-  const loadCurriculos = async () => {
+  const loadCurriculos = () => {
     try {
-<<<<<<< HEAD
-      const response = await api.getCurriculos();
-      setCurriculos(response.data);
-    } catch (error) {
-      console.error('Erro ao carregar currículos:', error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await api.deleteCurriculo(id);
-      loadCurriculos(); 
-    } catch (error) {
-      console.error('Erro ao excluir currículo:', error);
-    }
-  };
-
-  return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Meus Currículos</h1>
-      {curriculos.map((cv) => (
-        <div key={cv.id} className="bg-white shadow-md rounded-lg p-4 mb-4">
-          <h2 className="text-xl font-semibold">{cv.nome}</h2>
-          <p>{cv.email}</p>
-          <div className="mt-2">
-            <Link
-              to={`/curriculo/${cv.id}`}
-              className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-            >
-              Visualizar
-            </Link>
-
-            <Link
-              to={`/editar-curriculo/${cv.id}`}
-              className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
-            >
-              Editar
-            </Link>
-
-            <button 
-              onClick={() => handleDelete(cv.id)}
-              className="bg-red-500 text-white px-4 py-2 rounded"
-            >
-              Excluir
-            </button>
-          </div>
-        </div>
-      ))}
-=======
-      const response = await getCurriculos();
-      setCurriculos(response.data);
+      setCurriculos(curriculosStorage);
     } catch (error) {
       console.error('Erro ao carregar currículos:', error);
       Swal.fire('Erro', 'Não foi possível carregar os currículos', 'error');
@@ -82,8 +25,8 @@ export default function VisualizarCurriculos() {
     }
   };
 
-  const handleDelete = async (id, nome) => {
-    const result = await Swal.fire({
+  const handleDelete = (id, nome) => {
+    Swal.fire({
       title: 'Tem certeza?',
       text: `Deseja excluir o currículo de ${nome}?`,
       icon: 'warning',
@@ -94,30 +37,32 @@ export default function VisualizarCurriculos() {
       cancelButtonText: 'Cancelar',
       background: '#1f2937',
       color: '#fff'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await deleteCurriculo(id);
-        setCurriculos(curriculos.filter(cv => cv.id !== id));
-        Swal.fire({
-          title: 'Excluído!',
-          text: 'Currículo excluído com sucesso.',
-          icon: 'success',
-          background: '#1f2937',
-          color: '#fff'
-        });
-      } catch (error) {
-        console.error('Erro ao excluir:', error);
-        Swal.fire({
-          title: 'Erro',
-          text: 'Não foi possível excluir o currículo',
-          icon: 'error',
-          background: '#1f2937',
-          color: '#fff'
-        });
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          const novosCurriculos = curriculosStorage.filter(cv => cv.id !== id);
+          setCurriculosStorage(novosCurriculos);
+          setCurriculos(novosCurriculos);
+          
+          Swal.fire({
+            title: 'Excluído!',
+            text: 'Currículo excluído com sucesso.',
+            icon: 'success',
+            background: '#1f2937',
+            color: '#fff'
+          });
+        } catch (error) {
+          console.error('Erro ao excluir:', error);
+          Swal.fire({
+            title: 'Erro',
+            text: 'Não foi possível excluir o currículo',
+            icon: 'error',
+            background: '#1f2937',
+            color: '#fff'
+          });
+        }
       }
-    }
+    });
   };
 
   if (loading) {
@@ -131,7 +76,6 @@ export default function VisualizarCurriculos() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
       <div className="container mx-auto max-w-7xl">
-        {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-center mb-12 gap-4">
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">📋 Meus Currículos</h1>
@@ -165,20 +109,18 @@ export default function VisualizarCurriculos() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {curriculos.map((cv) => (
               <div key={cv.id} className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:border-purple-400/30 transition-all duration-300 hover:transform hover:scale-105 group">
-                {/* Avatar e Nome */}
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-2xl">
                     {cv.nome?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
-                      {cv.nome}
+                      {cv.nome || 'Sem nome'}
                     </h3>
                     <p className="text-purple-200 text-sm">ID: {cv.id}</p>
                   </div>
                 </div>
 
-                {/* Informações */}
                 <div className="space-y-3 mb-6">
                   {cv.email && (
                     <div className="flex items-center gap-3 text-purple-200">
@@ -195,7 +137,6 @@ export default function VisualizarCurriculos() {
                   )}
                 </div>
 
-                {/* Botões de Ação */}
                 <div className="flex gap-3 pt-6 border-t border-white/20">
                   <button
                     onClick={() => navigate(`/curriculo/${cv.id}`)}
@@ -210,7 +151,7 @@ export default function VisualizarCurriculos() {
                     <FaEdit className="group-hover/btn:scale-110 transition-transform" /> Editar
                   </button>
                   <button
-                    onClick={() => handleDelete(cv.id, cv.nome)}
+                    onClick={() => handleDelete(cv.id, cv.nome || 'Sem nome')}
                     className="flex-1 bg-red-600/20 text-red-300 px-4 py-3 rounded-xl hover:bg-red-600/30 transition-all duration-200 flex items-center justify-center gap-2 group/btn"
                   >
                     <FaTrash className="group-hover/btn:scale-110 transition-transform" /> Excluir
@@ -221,7 +162,6 @@ export default function VisualizarCurriculos() {
           </div>
         )}
 
-        {/* Estatísticas */}
         {curriculos.length > 0 && (
           <div className="mt-12 bg-white/5 rounded-2xl p-6 border border-white/10">
             <h3 className="text-white text-lg font-semibold mb-4">📊 Estatísticas</h3>
@@ -252,7 +192,6 @@ export default function VisualizarCurriculos() {
           </div>
         )}
       </div>
->>>>>>> 8d645a8b6c3c88bef368e672f79b1a12ffdd16fd
     </div>
   );
 }

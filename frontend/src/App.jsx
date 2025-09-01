@@ -1,12 +1,10 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import CriarCurriculo from './pages/CriarCurriculo';
+import VisualizarCurriculos from './pages/VisualizarCurriculos';
+import VerCurriculo from './pages/VerCurriculo';
 
 function App() {
-<<<<<<< HEAD
-  return <Home />;
-}
-
-export default App;
-=======
   return (
       <Routes>
         <Route path="/" element={<Home />} />
@@ -19,4 +17,3 @@ export default App;
 }
 
 export default App 
->>>>>>> 8d645a8b6c3c88bef368e672f79b1a12ffdd16fd
